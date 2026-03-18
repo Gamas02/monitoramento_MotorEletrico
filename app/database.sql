@@ -3,62 +3,66 @@
 -- =========================================
 CREATE DATABASE IF NOT EXISTS monitoramento;
 
--- Seleciona o banco
 USE monitoramento;
 
 -- =========================================
--- CRIAÇÃO DA TABELA PRINCIPAL
+-- TABELA: registros do motor elétrico
 -- =========================================
-CREATE TABLE IF NOT EXISTS registros_ambiente (
+CREATE TABLE IF NOT EXISTS registros_motor (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    
-    -- Data e hora do dado vindo do ThingSpeak
+
+    -- Data/hora da leitura (vinda do ThingSpeak)
     data_hora DATETIME NOT NULL,
-    
-    -- Valores do sensor
+
+    -- Sensores
     temperatura FLOAT NOT NULL,
-    umidade FLOAT NOT NULL,
-    
-    -- Origem do dado (ThingSpeak, Simulado, etc)
+    vibracao FLOAT NOT NULL,
+
+    -- Origem do dado
     origem_dado VARCHAR(50) DEFAULT 'ThingSpeak',
-    
-    -- Quando foi salvo no banco
+
+    -- Data de inserção no banco
     data_insercao TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- =========================================
--- INSERÇÃO DE DADOS DE TESTE (OPCIONAL)
+-- ÍNDICE (melhora performance de consultas)
 -- =========================================
-INSERT INTO registros_ambiente (data_hora, temperatura, umidade, origem_dado)
+CREATE INDEX idx_data_hora ON registros_motor(data_hora);
+
+-- =========================================
+-- DADOS DE TESTE (OPCIONAL)
+-- =========================================
+INSERT INTO registros_motor (data_hora, temperatura, vibracao, origem_dado)
 VALUES 
-('2026-03-17 10:00:00', 24.5, 55.0, 'Simulado'),
-('2026-03-17 10:05:00', 25.1, 57.2, 'Simulado'),
-('2026-03-17 10:10:00', 26.0, 60.3, 'ThingSpeak');
+('2026-03-17 10:00:00', 60.5, 0.02, 'Simulado'),
+('2026-03-17 10:05:00', 62.1, 0.03, 'Simulado'),
+('2026-03-17 10:10:00', 65.0, 0.05, 'ThingSpeak');
 
 -- =========================================
--- CONSULTAS ÚTEIS (PARA TESTES)
+-- CONSULTAS ÚTEIS
 -- =========================================
 
--- Ver todos os dados
-SELECT * FROM registros_ambiente;
+-- Todos os registros
+SELECT * FROM registros_motor;
 
 -- Últimos 10 registros
-SELECT * FROM registros_ambiente
+SELECT * FROM registros_motor
 ORDER BY data_hora DESC
 LIMIT 10;
 
 -- Média de temperatura
 SELECT AVG(temperatura) AS media_temperatura
-FROM registros_ambiente;
+FROM registros_motor;
 
--- Média de umidade
-SELECT AVG(umidade) AS media_umidade
-FROM registros_ambiente;
+-- Média de vibração
+SELECT AVG(vibracao) AS media_vibracao
+FROM registros_motor;
 
--- Maior temperatura registrada
-SELECT MAX(temperatura) AS maior_temperatura
-FROM registros_ambiente;
+-- Maior vibração (importante para falhas)
+SELECT MAX(vibracao) AS pico_vibracao
+FROM registros_motor;
 
--- Menor temperatura registrada
-SELECT MIN(temperatura) AS menor_temperatura
-FROM registros_ambiente;
+-- Maior temperatura
+SELECT MAX(temperatura) AS pico_temperatura
+FROM registros_motor;
