@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-API_KEY = os.getenv("THINGSPEAK_API_KEY")
+API_KEY = os.getenv("THLP3MKO5MRKXQIT")
 
 def enviar_dados(temperatura, vibracao):
     url = "https://api.thingspeak.com/update"
