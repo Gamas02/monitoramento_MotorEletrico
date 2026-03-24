@@ -1,13 +1,11 @@
-import mysql.connector
 import os
-from dotenv import load_dotenv
-
-load_dotenv()
+import mysql.connector
 
 def get_connection():
     return mysql.connector.connect(
-        host="db",  # nome do serviço MySQL no docker-compose
-        user=os.getenv("MYSQL_USER"),
-        password=os.getenv("MYSQL_PASSWORD"),
-        database=os.getenv("MYSQL_DATABASE"),
+        host=os.getenv("DB_HOST"),
+        user=os.getenv("DB_USER"),
+        password=os.getenv("DB_PASSWORD"),
+        database=os.getenv("DB_NAME"),
+        port=int(os.getenv("DB_PORT", 3306))
     )

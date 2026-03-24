@@ -14,5 +14,6 @@ COPY app ./app
 # Copia arquivo .env para dentro do container (opcional)
 COPY .env .
 
-# Comando para rodar a aplicação
-CMD ["python", "app/app.py"]
+ENV PYTHONPATH=/app
+
+CMD ["python", "-m", "app.app"]
